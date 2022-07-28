@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.ui
 
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -15,6 +16,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mozilla.fenix.helpers.AndroidAssetDispatcher
 import org.mozilla.fenix.helpers.FeatureSettingsHelper
+import org.mozilla.fenix.helpers.HomeActivityIntentTestRule
 import org.mozilla.fenix.helpers.HomeActivityTestRule
 import org.mozilla.fenix.helpers.RetryTestRule
 import org.mozilla.fenix.helpers.TestAssetHelper
@@ -45,13 +47,15 @@ class TabbedBrowsingTest {
     private lateinit var mockWebServer: MockWebServer
     private val featureSettingsHelper = FeatureSettingsHelper()
 
-    /* ktlint-disable no-blank-line-before-rbrace */ // This imposes unreadable grouping.
     @get:Rule
-    val activityTestRule = HomeActivityTestRule()
-
-    @Rule
-    @JvmField
-    val retryTestRule = RetryTestRule(3)
+    val composeTestRule = AndroidComposeTestRule(
+        HomeActivityIntentTestRule(),
+        { it.activity }
+    )
+//
+//    @Rule
+//    @JvmField
+//    val retryTestRule = RetryTestRule(3)
 
     @Before
     fun setUp() {
@@ -72,7 +76,6 @@ class TabbedBrowsingTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun openNewTabTest() {
         val defaultWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -82,7 +85,7 @@ class TabbedBrowsingTest {
             verifyTabCounter("1")
         }.openTabDrawer {
             verifyNormalModeSelected()
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             closeTab()
         }.openTabDrawer {
             verifyNoOpenTabsInNormalBrowsing()
@@ -92,12 +95,11 @@ class TabbedBrowsingTest {
             verifyTabCounter("1")
         }.openTabDrawer {
             verifyNormalModeSelected()
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
         }
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun openNewPrivateTabTest() {
         val defaultWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -118,7 +120,6 @@ class TabbedBrowsingTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun closeAllTabsTest() {
         val defaultWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -158,7 +159,7 @@ class TabbedBrowsingTest {
         navigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             closeTab()
         }
         homeScreen {
@@ -166,16 +167,16 @@ class TabbedBrowsingTest {
         }.openNavigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
-            swipeTabRight("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
+            swipeTabRight("Test_Page_1", composeTestRule)
         }
         homeScreen {
             verifyNoTabsOpened()
         }.openNavigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
-            swipeTabLeft("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
+            swipeTabLeft("Test_Page_1", composeTestRule)
         }
         homeScreen {
             verifyNoTabsOpened()
@@ -183,7 +184,6 @@ class TabbedBrowsingTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun verifyUndoSnackBarTest() {
         // disabling these features because they interfere with the snackbar visibility
         featureSettingsHelper.setPocketEnabled(false)
@@ -194,7 +194,7 @@ class TabbedBrowsingTest {
         navigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             closeTab()
             verifySnackBarText("Tab closed")
             snackBarButtonClick("UNDO")
@@ -203,7 +203,7 @@ class TabbedBrowsingTest {
         browserScreen {
             verifyTabCounter("1")
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
         }
     }
 
@@ -216,7 +216,7 @@ class TabbedBrowsingTest {
         navigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             verifyCloseTabsButton("Test_Page_1")
             closeTab()
         }
@@ -225,16 +225,16 @@ class TabbedBrowsingTest {
         }.openNavigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
-            swipeTabRight("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
+            swipeTabRight("Test_Page_1", composeTestRule)
         }
         homeScreen {
             verifyNoTabsOpened()
         }.openNavigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
-            swipeTabLeft("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
+            swipeTabLeft("Test_Page_1", composeTestRule)
         }
         homeScreen {
             verifyNoTabsOpened()
@@ -242,7 +242,6 @@ class TabbedBrowsingTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun verifyPrivateTabUndoSnackBarTest() {
         val genericURL = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -250,7 +249,7 @@ class TabbedBrowsingTest {
         navigationToolbar {
         }.enterURLAndEnterToBrowser(genericURL.url) {
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             verifyCloseTabsButton("Test_Page_1")
             closeTab()
             verifySnackBarText("Private tab closed")
@@ -260,7 +259,7 @@ class TabbedBrowsingTest {
         browserScreen {
             verifyTabCounter("1")
         }.openTabDrawer {
-            verifyExistingOpenTabs("Test_Page_1")
+            verifyOpenTabsList("Test_Page_1")
             verifyPrivateModeSelected()
         }
     }
@@ -323,7 +322,6 @@ class TabbedBrowsingTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun verifyOpenTabDetails() {
         val defaultWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -337,8 +335,7 @@ class TabbedBrowsingTest {
             verifyTabsTrayCounter()
             verifyExistingTabList()
             verifyNormalBrowsingNewTabButton()
-            verifyOpenedTabThumbnail()
-            verifyExistingOpenTabs(defaultWebPage.title)
+            verifyOpenTabsList(defaultWebPage.title)
             verifyCloseTabsButton(defaultWebPage.title)
         }.openTab(defaultWebPage.title) {
             verifyUrl(defaultWebPage.url.toString())

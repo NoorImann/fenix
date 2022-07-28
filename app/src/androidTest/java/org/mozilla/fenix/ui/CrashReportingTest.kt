@@ -97,8 +97,8 @@ class CrashReportingTest {
         }.openTabCrashReporter {
             verifyPageContent(tabCrashMessage)
         }.openTabDrawer {
-            verifyExistingOpenTabs(firstWebPage.title)
-            verifyExistingOpenTabs(secondWebPage.title)
+            verifyOpenTabsList(firstWebPage.title)
+            verifyOpenTabsList(secondWebPage.title)
         }.closeTabDrawer {
         }.goToHomescreen {
             verifyExistingTopSitesList()
@@ -109,7 +109,6 @@ class CrashReportingTest {
 
     @SmokeTest
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun privateBrowsingUseAppWhileTabIsCrashedTest() {
         val firstWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
         val secondWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 2)
@@ -130,8 +129,7 @@ class CrashReportingTest {
         }.openTabCrashReporter {
             verifyPageContent(tabCrashMessage)
         }.openTabDrawer {
-            verifyExistingOpenTabs(firstWebPage.title)
-            verifyExistingOpenTabs(secondWebPage.title)
+            verifyOpenTabsList(firstWebPage.title, secondWebPage.title)
         }.closeTabDrawer {
         }.goToHomescreen {
             verifyPrivateSessionMessage()

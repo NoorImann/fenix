@@ -728,7 +728,7 @@ class BrowserRobot {
             ).waitForExists(waitingTime)
 
             tabsCounter().click()
-            mDevice.waitNotNull(Until.findObject(By.res("$packageName:id/tab_layout")))
+            mDevice.waitNotNull(Until.findObject(By.res("$packageName:id/tabsTray")))
 
             TabDrawerRobot().interact()
             return TabDrawerRobot.Transition()

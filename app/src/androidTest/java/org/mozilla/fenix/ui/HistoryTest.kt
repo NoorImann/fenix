@@ -180,7 +180,6 @@ class HistoryTest {
     }
 
     @Test
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun openHistoryInNewTabTest() {
         val firstWebPage = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
@@ -294,7 +293,6 @@ class HistoryTest {
 
     @Test
     // This test verifies the Recently Closed Tabs List and items
-    @Ignore("Failing after compose migration. See: https://github.com/mozilla-mobile/fenix/issues/26087")
     fun verifyRecentlyClosedTabsListTest() {
         val website = TestAssetHelper.getGenericAsset(mockWebServer, 1)
 
